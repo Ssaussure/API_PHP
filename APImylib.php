@@ -17,11 +17,10 @@ function connexionBd()
     return $linkpdo;
 }
 
-function getId($id)
+function getId($linkedPDO, $id)
 {
-    $linkpdo = connexionBd();
     // preparation de la Requête sql
-    $req = $linkpdo->prepare('select * from articles where id = :id');
+    $req = $linkedPDO->prepare('select * from articles where id = :id');
     if ($req == false) {
         die('Erreur !');
     }
