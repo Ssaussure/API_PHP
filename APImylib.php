@@ -17,10 +17,11 @@ function connexionBd()
     return $linkpdo;
 }
 
-function getId($linkedPDO, $id)
+function getId($id)
 {
+    $linkpdo = connexionBd();
     // preparation de la Requête sql
-    $req = $linkedPDO->prepare('select * from articles where id = :id');
+    $req = $linkpdo->prepare('select * from articles where id = :id');
     if ($req == false) {
         die('Erreur !');
     }
@@ -118,7 +119,7 @@ function put($id, $publication)
 {
     $linkpdo = connexionBd();
     // preparation de la Requête sql
-    $req = $linkpdo->prepare('update articles set publication = :publication,where id = :id');
+    $req = $linkpdo->prepare('update articles set publication = :publication where id = :id');
     if ($req == false) {
         die('Erreur ! Put');
     }
