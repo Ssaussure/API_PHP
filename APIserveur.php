@@ -10,33 +10,26 @@
 	$bearer_token = '';
 	$bearer_token = get_bearer_token();
 
-	$linkedPDO = connectionBD()
+	$linkedPDO = connexionBd();
 
 	/// Identification du type de méthode HTTP envoyée par le client
 	$http_method = $_SERVER['REQUEST_METHOD'];	
-
 	if(is_jwt_valid($bearer_token)){
-
 		switch ($http_method) {
+		
+
+		
 
 		    /// Cas de la méthode GET
 		    case "GET":
 		        try {
 		            //! Traitement
 		            if (isset($_GET['id'])) {
-		                //! Exception
-		                if (empty($_GET['id'])) {
-		                    throw new Exception("Missing id", 400);
-		                }
-		                if ($_GET['id'] == "signalement") {
-		                    $matchingData = getBySignalement();
-		                } elseif ($_GET['id'] == "vote") {
-		                    $matchingData = getByVote();
-		                } elseif ($_GET['id'] == "last10") {
-		                    $matchingData = getByLast10();
-		                } else {
-		                    $matchingData = getId($_GET['id']);
-		                }
+						$matchingData = getId($linkedPDO, $_GET['id']);
+						if(is_null($matchingData)) {
+							deliver_response(500, "Erreur", null);
+						}
+						deliver_response(200, "Voici les articles", $matchingData);
 		            } else {
 		                $matchingData = getALL();
 		            }

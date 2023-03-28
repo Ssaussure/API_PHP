@@ -11,138 +11,98 @@ function connexionBd()
         // connexion à la BD
         $linkpdo = new PDO("mysql:host=$SERVER;dbname=$DB", $LOGIN, $MDP);
     } catch (Exception $e) {
-        die('Erreur ! Problème de connexion à la base de données : ' . $e->getMessage());
+        return null;
     }
     // retourne la connection
     return $linkpdo;
 }
 
-function getId($id)
+function getId($linkpdo, $id)
 {
-    $linkpdo = connexionBd();
+    if(empty($id) || !is_numeric($id)) {
+        return null;
+    }
     // preparation de la Requête sql
-    $req = $linkpdo->prepare('select * from articles where id = :id');
-    if ($req == false) {
-        die('Erreur !');
+    try{
+        $req = $linkpdo->prepare('select * from articles where id = :id');
+    } catch(PDOException $e) {
+        return null;
     }
-    // execution de la Requête sql
-    $req->execute(array('id' => $id));
-    if ($req == false) {
-        die('Erreur !');
+    
+    if($req->bindParam(':id', $id, PDO::PARAM_INT)) {
+        if($req->execute()) {
+            return $req->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
-    return $req->fetchAll();
+    return null;
 }
 
-function getBySignalement()
+
+
+function getAll($linkpdo)
 {
-    $linkpdo = connexionBd();
-    // preparation de la Requête sql
-    $req = $linkpdo->prepare('select * from articles where signalement > 0');
+    try{
+        $req = $linkpdo->prepare('select * from articles');
+    }catch(PDOException $e){
+        return null;
+    }
+    
     if ($req == false) {
         die('Erreur ! GetAll');
     }
-    // execution de la Requête sql
-    $req->execute();
-    if ($req == false) {
-        die('Erreur ! GetAll');
+    if($req->execute()) {
+        return $req->fetchAll(PDO::FETCH_ASSOC);
     }
-    return $req->fetchAll();
 }
 
-function getByVote()
-{
-    $linkpdo = connexionBd();
-    // preparation de la Requête sql
-    $req = $linkpdo->prepare('select * from articles where like_pub > 3 order by like_pub desc');
-    if ($req == false) {
-        die('Erreur ! GetAll');
+function post($publication, $auteur, $linkpdo) {
+    try{
+        $req = $linkpdo->prepare('insert into articles (publication,auteur,like_pub,dislike,date, signalement) value(:publication,:auteur, 0,0,NOW(),0)');
+    }catch(PDOException $e) {
+        return null;
     }
-    // execution de la Requête sql
-    $req->execute();
-    if ($req == false) {
-        die('Erreur ! GetAll');
-    }
-    return $req->fetchAll();
-}
-
-function getByLast10()
-{
-    $linkpdo = connexionBd();
-    // preparation de la Requête sql
-    $req = $linkpdo->prepare('select * from articles order by id desc limit 10');
-    if ($req == false) {
-        die('Erreur ! GetAll');
-    }
-    // execution de la Requête sql
-    $req->execute();
-    if ($req == false) {
-        die('Erreur ! GetAll');
-    }
-    return $req->fetchAll();
-}
-
-function getAll()
-{
-    $linkpdo = connexionBd();
-    // preparation de la Requête sql
-    $req = $linkpdo->prepare('select * from articles');
-    if ($req == false) {
-        die('Erreur ! GetAll');
-    }
-    // execution de la Requête sql
-    $req->execute();
-    if ($req == false) {
-        die('Erreur ! GetAll');
-    }
-    return $req->fetchAll();
-}
-
-function post($publication, $auteur)
-{
-    $linkpdo = connexionBd();
-    // preparation de la Requête sql
-    $req = $linkpdo->prepare('insert into articles (publication,auteur,like_pub,dislike,date, signalement) value(:publication,:auteur, 0,0,NOW(),0)');
-    if ($req == false) {
-        die('Erreur ! Post');
-    }
-    // execution de la Requête sql
-    $req->execute(array(':publication' => $publication, ':auteur' => $auteur));
-    if ($req == false) {
-        die('Erreur ! Post');
-    }
-    // recuperation du dernier id
-    $lastId = $linkpdo->lastInsertId();
-    return getId($lastId);
-}
-
-function put($id, $publication)
-{
-    $linkpdo = connexionBd();
-    // preparation de la Requête sql
-    $req = $linkpdo->prepare('update articles set publication = :publication where id = :id');
-    if ($req == false) {
-        die('Erreur ! Put');
-    }
-    // execution de la Requête sql
-    $req->execute(array('id' => $id, ':publication' => $publication));
-    if ($req == false) {
-        die('Erreur ! Put');
-    }
-    // recuperation du dernier id
+    if ($req -> bindParam(':publication', $publication, PDO::PARAM_STR, ':auteur', $auteur, PDO::PARAM_STR)) {
+        if($req->execute()) {
+            return $req->fetchAll(PDO::FETCH_ASSOC);
+        }
+    $id = $linkpdo->lastInsertId();
     return getId($id);
 }
-
-function delete($id)
-{
-    $linkpdo = connexionBd();
-    // preparation de la Requête sql
-    $req = $linkpdo->prepare('delete from articles where id = :id');
-    if ($req == false) {
-        die('Erreur ! Delete');
     }
-    // execution de la Requête sql
-    $req->execute(array('id' => $id));
-    if ($req == false) {
-        die('Erreur ! Delete');
+
+
+function put($id, $publication, $linkpdo)
+{
+    if(empty($id) || !is_numeric($id)) {
+        return null;
+    }
+
+    try {
+        // preparation de la Requête sql
+         $req = $linkpdo->prepare('update articles set publication = :publication where id = :id');
+    } catch(PDOException $e) {
+        return null;
+    }
+    if ($req -> bindParam(':publication', $publication, PDO::PARAM_STR, ':id', $id, PDO::PARAM_INT)) {
+        if($req->execute()) {
+            return $req->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+    }
+}
+
+function delete($id, $linkpdo){
+    if(empty($id) || !is_numeric($id)) {
+        return null;
+    }
+    try {
+        $req = $linkpdo->prepare('delete from articles where id = :id');
+    } catch(PDOException $e) {
+        return null;
+    }
+    if($req -> bindParam(':id', $id, PDO::PARAM_INT)) {
+        if($req->execute()){
+            return $req->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
 }
