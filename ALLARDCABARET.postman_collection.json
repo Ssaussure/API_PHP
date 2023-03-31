@@ -1,0 +1,127 @@
+{
+	"info": {
+		"_postman_id": "0fb454ed-2f81-42e6-9567-2e502e85c54f",
+		"name": "Projet PHP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25747419"
+	},
+	"item": [
+		{
+			"name": "CO publisher",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"CbrtLine\",\r\n \"password\":\"iutinfo\"}"
+				},
+				"url": {
+					"raw": "http://localhost/API_PHP-main/ServeurAuthentification.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"API_PHP-main",
+						"ServeurAuthentification.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "co mederator",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"AlrdFabien\",\r\n \"password\":\"FabInfo\"}"
+				},
+				"url": {
+					"raw": "http://localhost/API_PHP-main/ServeurAuthentification.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"API_PHP-main",
+						"ServeurAuthentification.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost/API_PHP-main/APIserveur.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"API_PHP-main",
+						"APIserveur.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST publisher",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"publication\": \"ceci est un test\" }"
+				},
+				"url": {
+					"raw": "http://localhost/API_PHP-main/APIserveur.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"API_PHP-main",
+						"APIserveur.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE MODO",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost/API_PHP-main/APIserveur.php?id=4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"API_PHP-main",
+						"APIserveur.php"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "4"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
